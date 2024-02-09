@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
 import { CommonModule } from '@angular/common';
@@ -11,31 +11,22 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
-export class NavComponent {
+
+export class NavComponent implements OnInit {
   constructor(
     private formBuilder:FormBuilder,
-    private accountService:AccountService
+    public accountService:AccountService
   ){}
-
-  isLoggedIn = false;
 
   loginForm = this.formBuilder.group({
     username: '',
     password: ''
-  })
-
-  getCurrentUser(){
-    this.accountService.currentUser$.subscribe({
-      next: user => this.isLoggedIn = !!user, // "!!" ile user nesnesi boolean olur.
-      error: error => console.log(error)
-    })
-  }
+  });
 
   login(){
     this.accountService.login(this.loginForm).subscribe({
       next: response => {
         console.log(response);
-        this.isLoggedIn = true;
       },
       error: error => console.log(error)
     })
@@ -43,10 +34,8 @@ export class NavComponent {
 
   logout(){
     this.accountService.logout();
-    this.isLoggedIn = false;
   }
 
-  onSubmit(){
-    this.login();
+  ngOnInit(): void {
   }
 }

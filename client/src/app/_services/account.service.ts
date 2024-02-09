@@ -14,24 +14,36 @@ export class AccountService {
 
   constructor(private httpClient:HttpClient) { }
 
+  setCurrentUser(user:User){
+    this.currentUserSource.next(user);
+  }
+
   login(loginForm:FormGroup){
     return this.httpClient.post<User>(`${this.baseUrl}account/login`, loginForm.value).pipe(
-      map((response:User) => {
-        const user = response;
+      map(user => {
         if(user){
           localStorage.setItem("user", JSON.stringify(user));
           this.currentUserSource.next(user);
         }
+        return user;
       })
     );
-  }
-
-  setCurrentUser(user:User){
-    this.currentUserSource.next(user);
   }
 
   logout(){
     localStorage.removeItem("user");
     this.currentUserSource.next(null);
+  }
+
+  register(registerForm:FormGroup){
+    return this.httpClient.post<User>(`${this.baseUrl}account/register`, registerForm.value).pipe(
+      map(user => {
+        if(user){
+          localStorage.setItem("user", JSON.stringify(user));
+          this.currentUserSource.next(user);
+        }
+        return user;
+      })
+    )
   }
 }
