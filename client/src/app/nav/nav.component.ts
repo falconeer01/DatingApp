@@ -3,11 +3,13 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { Router, RouterLink } from '@angular/router';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgbDropdownModule],
+  imports: [ReactiveFormsModule, CommonModule, NgbDropdownModule, RouterLink, ToastrModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
@@ -15,7 +17,9 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 export class NavComponent implements OnInit {
   constructor(
     private formBuilder:FormBuilder,
-    public accountService:AccountService
+    public accountService:AccountService,
+    private router:Router,
+    private toastrService:ToastrService
   ){}
 
   loginForm = this.formBuilder.group({
@@ -25,15 +29,25 @@ export class NavComponent implements OnInit {
 
   login(){
     this.accountService.login(this.loginForm).subscribe({
-      next: response => {
-        console.log(response);
-      },
-      error: error => console.log(error)
-    })
+      next: () => this.router.navigateByUrl("/members"),
+      error: error => this.toastrService.error(error.error)
+    });
   }
 
   logout(){
     this.accountService.logout();
+    this.router.navigateByUrl("/");
+  }
+
+  getUserName(): string | null {
+    let currentUserStr = localStorage.getItem('user');
+
+    if (currentUserStr !== null) {
+      let currentUser = JSON.parse(currentUserStr);
+      return currentUser.userName;
+    } else {
+      return null;
+    }
   }
 
   ngOnInit(): void {

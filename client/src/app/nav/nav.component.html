@@ -1,38 +1,36 @@
 <nav
-  class="navbar navbar-expand-sm navbar-light bg-light"
+  class="navbar navbar-expand-sm navbar-light bg-info"
 >
   <div class="container">
-    <a class="navbar-brand" href="#">Dating App</a>
-    <button
-      class="navbar-toggler d-lg-none"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#collapsibleNavId"
-      aria-controls="collapsibleNavId"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active">Dating App</a>
     <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavId">
-      <ul class="navbar-nav me-auto mt-2 mt-lg-0" *ngIf="accountService.currentUser$ | async">
+      <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+        <!-- NG Container DOM'da gözükmeyecek bir elementtir. Burada kullanıcının giriş yapıp yapmadığını kontrol ediyoruz. Eğer kullanıcı giriş yaptıysa li elementleri sayfada gözükecek. Giriş yapılmadıysa li elementleri gözükmeyecek. -->
+        <ng-container *ngIf="accountService.currentUser$ | async">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/members" routerLinkActive="active" >Matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/lists" routerLinkActive="active" >Lists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/messages" routerLinkActive="active" >Messages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="logout()">Logout</a>
+          </li>
+        </ng-container>
+
         <li class="nav-item">
-          <a class="nav-link" href="#">Matches</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Lists</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Messages</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" (click)="logout()">Logout</a>
+          <a class="nav-link" routerLink="/errors" routerLinkActive="active" >
+            Errors
+          </a>
         </li>
       </ul>
 
-      <div ngbDropdown class="d-inline-block" *ngIf="accountService.currentUser$ | async">
-        <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
-          Welcome user
+      <div ngbDropdown class="d-inline-block" *ngIf="(accountService.currentUser$ | async) as user">
+        <button type="button" class="btn btn-outline-dark" id="dropdownBasic1" ngbDropdownToggle>
+          Welcome {{ getUserName() | titlecase}}
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
           <a ngbDropdownItem class="dropdown-item">Edit Profile</a>
@@ -58,7 +56,7 @@
           formControlName="password"
         />
         <button
-          class="btn btn-outline-success my-2 my-sm-0"
+          class="btn btn-success my-2 my-sm-0"
           type="submit"
         >
           Login
