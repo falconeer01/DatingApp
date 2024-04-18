@@ -1,6 +1,5 @@
 ﻿using API.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace API.Data;
 
